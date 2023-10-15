@@ -1,0 +1,23 @@
+services:
+  postgres:
+    build: postgres
+    environment: &env
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_USER: osm
+      POSTGRES_DB: osm
+      # https://www.postgresql.org/docs/current/libpq-envars.html
+      PGHOST: postgres
+      PGPASSWORD: test_password
+      PGUSER: osm
+      PGDATABASE: osm
+    healthcheck:
+      test: ["CMD", "pg_isready"]
+    volumes:
+      - ./data:/var/lib/postgresql/data
+  osm2pgsql:
+    build: osm2pgsql
+    depends_on:
+      - postgres
+    environment:
+      <<: *env
+      INITIAL_PBF: http://download.geofabrik.de/europe/italy/isole-latest.osm.pbf
