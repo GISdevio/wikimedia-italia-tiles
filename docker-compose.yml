@@ -14,10 +14,29 @@ services:
       test: ["CMD", "pg_isready"]
     volumes:
       - ./data:/var/lib/postgresql/data
+    ports: # workaround sideload layers
+      - 5432:5432
+    #command: ["postgres", "-c", "log_statement=all"]
   osm2pgsql:
     build: osm2pgsql
     depends_on:
       - postgres
     environment:
       <<: *env
-      INITIAL_PBF: http://download.geofabrik.de/europe/italy/isole-latest.osm.pbf
+      INITIAL_PBF: http://download.geofabrik.de/europe/italy-latest.osm.pbf
+  renderd:
+    build: renderd
+    depends_on:
+      - postgres
+    environment:
+      <<: *env
+    volumes:
+      - ./tiles:/var/cache/renderd/tiles
+  apache:
+    build: apache
+    depends_on:
+      - renderd
+    volumes:
+      - ./tiles:/var/cache/renderd/tiles
+    ports:
+      - 8081:8081
