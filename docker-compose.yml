@@ -1,6 +1,6 @@
 services:
   postgres:
-    build: postgres
+    build: services/postgres
     environment: &env
       POSTGRES_PASSWORD: test_password
       POSTGRES_USER: osm
@@ -13,30 +13,45 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready"]
     volumes:
-      - ./data:/var/lib/postgresql/data
-    ports: # workaround sideload layers
-      - 5432:5432
+      - ./data/postgres:/var/lib/postgresql/data
     #command: ["postgres", "-c", "log_statement=all"]
+  external-data:
+    build: services/external-data
+    environment:
+      <<: *env
+    volumes:
+      - ./data/external:/data
   osm2pgsql:
-    build: osm2pgsql
+    build: services/osm2pgsql
     depends_on:
       - postgres
     environment:
       <<: *env
-      INITIAL_PBF: http://download.geofabrik.de/europe/italy-latest.osm.pbf
+      REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
+      INITIAL_PBF: http://nginx/isole-latest.osm.pbf
+#      INITIAL_PBF: http://download.geofabrik.de/europe/italy-latest.osm.pbf
+  nginx:
+    image: nginx:1.27
+    volumes:
+      - ./data/init:/usr/share/nginx/html:ro
   renderd:
-    build: renderd
+    build:
+      context: services/web
+      dockerfile: renderd/Dockerfile
     depends_on:
       - postgres
     environment:
       <<: *env
     volumes:
-      - ./tiles:/var/cache/renderd/tiles
+      - ./data/tiles:/var/cache/renderd/tiles
+      - ./data/layers_dummy:/syles/hiking/layers
   apache:
-    build: apache
+    build:
+      context: services/web
+      dockerfile: apache/Dockerfile
     depends_on:
       - renderd
     volumes:
-      - ./tiles:/var/cache/renderd/tiles
+      - ./data/tiles:/var/cache/renderd/tiles
     ports:
       - 8081:8081
