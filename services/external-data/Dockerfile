@@ -13,11 +13,11 @@ RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
         gdal-bin \
         postgresql-client
 WORKDIR /app
-COPY --from=openstreetmap-carto /scripts/get-external-data.py ./
-COPY --from=openstreetmap-carto /external-data.yml ./
+COPY --from=openstreetmap-carto /scripts/get-external-data.py /scripts/indexes.py ./scripts/
+COPY --from=openstreetmap-carto /external-data.yml /indexes.yml ./
 
-COPY entrypoint.sh ./
+COPY entrypoint.sh run.sh ./
 ENTRYPOINT ["./entrypoint.sh"]
 
 # --no-update
-CMD exec python3 get-external-data.py --cache --data /data -H postgres -d osm -U osm -w test_password
+CMD ["./run.sh"]
