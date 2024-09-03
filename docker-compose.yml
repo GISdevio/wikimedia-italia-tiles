@@ -29,9 +29,10 @@ services:
     environment:
       <<: *env
       REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
-      INITIAL_PBF: /data/isole-latest.osm.pbf
+      INITIAL_PBF: /data/init/europe-latest.osm.pbf
     volumes:
-      - ./data/init:/data
+      - ./data/init:/data/init:ro
+      - ./data/cache:/data/cache
   renderd:
     build:
       context: services/web

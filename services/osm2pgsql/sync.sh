@@ -6,6 +6,8 @@ set -euo pipefail
 if [ $(psql -Atc "select exists (select * from pg_tables where schemaname='public' and tablename='planet_osm_ways')") == 'f' ]
 then
     osm2pgsql \
+        --cache=15000 \
+	    --flat-nodes=/data/cache/nodes.bin \
         --slim `# needed by osm2pgsql-replication` \
         --multi-geometry \
         --hstore \
@@ -19,6 +21,8 @@ osm2pgsql-replication init --server "$REPLICATION_URL"
 while [ $? ]
 do
     osm2pgsql-replication update -- \
+        --cache=15000 \
+	    --flat-nodes=/data/cache/nodes.bin \
         --append \
         --slim \
         --multi-geometry \
