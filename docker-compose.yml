@@ -42,6 +42,7 @@ services:
     environment:
       <<: *env
     volumes:
+      - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles
       - ./data/layers_dummy:/syles/hiking/layers
   apache:
@@ -51,6 +52,10 @@ services:
     depends_on:
       - renderd
     volumes:
+      - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles
     ports:
       - 8081:8081
+
+volumes:
+  renderd-socket:
