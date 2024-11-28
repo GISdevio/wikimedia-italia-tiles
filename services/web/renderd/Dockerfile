@@ -24,7 +24,8 @@ RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
         renderd \
         fonts-hanazono fonts-noto-cjk fonts-noto-hinted fonts-noto-unhinted fonts-unifont \
         postgresql-client \
-        xmlstarlet
+        xmlstarlet \
+        libjemalloc2
 WORKDIR /styles
 COPY --from=style_carto /openstreetmap-carto/project.xml ./carto/
 COPY --from=style_carto /openstreetmap-carto/symbols ./carto/symbols
@@ -36,4 +37,5 @@ COPY common/renderd.conf /etc/renderd.conf
 
 ENTRYPOINT ["./entrypoint.sh"]
 
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2
 CMD ["renderd", "-f"]
