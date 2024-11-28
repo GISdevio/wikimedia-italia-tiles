@@ -44,7 +44,7 @@ services:
     volumes:
       - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles
-      - ./data/layers_dummy:/syles/hiking/layers
+      - ./data/layers_dummy:/syles/hiking/layers:ro
   apache:
     build:
       context: services/web
@@ -53,7 +53,7 @@ services:
       - renderd
     volumes:
       - renderd-socket:/run/renderd
-      - ./data/tiles:/var/cache/renderd/tiles
+      - ./data/tiles:/var/cache/renderd/tiles:ro
     ports:
       - 8081:8081
 
