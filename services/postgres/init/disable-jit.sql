@@ -1,1 +1,0 @@
-alter system set jit=off;
