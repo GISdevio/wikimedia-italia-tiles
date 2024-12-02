@@ -61,6 +61,7 @@ services:
       - postgres
     environment:
       <<: *env
+      #G_MESSAGES_DEBUG: "all" # debug
     volumes:
       - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles
