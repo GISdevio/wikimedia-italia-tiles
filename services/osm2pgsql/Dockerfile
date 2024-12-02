@@ -6,7 +6,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apk \
     apk add bash postgresql16-client
 
 WORKDIR /app
-COPY entrypoint.sh sync.sh ./
+COPY entrypoint.sh sync.sh init.sh ./
 COPY --from=openstreetmap-carto /openstreetmap-carto/openstreetmap-carto.lua ./
 COPY --from=openstreetmap-carto /openstreetmap-carto/openstreetmap-carto.style ./
 

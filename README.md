@@ -10,5 +10,7 @@ Download the planet or the extract in avance and modify `docker-compose.yml` acc
 
 ```bash
 docker compose build
-docker compose up
+docker compose --profile init run --rm external-data
+docker compose --profile init run --rm import
+docker compose up -d
 ```

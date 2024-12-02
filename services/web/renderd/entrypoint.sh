@@ -21,15 +21,4 @@ do
     sleep 1
 done
 
-# from openstreetmap-carto external-data.yml + planet
-for layer in \
-  simplified_water_polygons water_polygons icesheet_polygons icesheet_outlines ne_110m_admin_0_boundary_lines_land \
-  planet_osm_point planet_osm_line planet_osm_ways planet_osm_roads planet_osm_rels planet_osm_polygon
-do
-  while ! [ $(psql -Atc "select exists (select * from pg_tables where schemaname='public' and tablename='${layer}')") == 't' ]
-  do
-    sleep 1
-  done
-done
-
 exec "$@"
