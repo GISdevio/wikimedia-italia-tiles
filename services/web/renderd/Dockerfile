@@ -3,7 +3,7 @@ RUN --mount=type=cache,target=/root/.npm \
     npm install -g carto
 
 FROM cartocss AS style_carto
-ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_updated /openstreetmap-carto
+ADD https://github.com/osmItalia/openstreetmap-carto.git#master /openstreetmap-carto
 WORKDIR /openstreetmap-carto
 RUN carto project.mml > project.xml
 
