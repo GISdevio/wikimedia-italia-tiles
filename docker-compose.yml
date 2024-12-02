@@ -1,5 +1,5 @@
 services:
-  postgres:
+  postgres: &postgres
     build: services/postgres
     environment: &env
       POSTGRES_PASSWORD: test_password
@@ -15,25 +15,43 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     #command: ["postgres", "-c", "log_statement=all"] # debug
-    #command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"] # import
+  postgres-fastimport:
+    <<: *postgres
+    profiles:
+      - init
+    hostname: postgres
+    command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off", "-c", "jit=off"]
   external-data:
+    profiles:
+      - init
     build: services/external-data
     depends_on:
-      - postgres
+      - postgres-fastimport
     environment:
       <<: *env
     volumes:
       - ./data/external:/data
-  osm2pgsql:
+  import:
+    profiles:
+      - init
+    build: services/osm2pgsql
+    command: "./init.sh"
+    depends_on:
+      - postgres-fastimport
+    environment:
+      <<: *env
+      REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
+      INITIAL_PBF: /data/init/planet-latest.osm.pbf
+    volumes:
+      - ./data/init:/data/init:ro
+      - ./data/cache:/data/cache
+  sync:
     build: services/osm2pgsql
     depends_on:
       - postgres
     environment:
       <<: *env
-      REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
-      INITIAL_PBF: /data/init/europe-latest.osm.pbf
     volumes:
-      - ./data/init:/data/init:ro
       - ./data/cache:/data/cache
   renderd:
     build:
