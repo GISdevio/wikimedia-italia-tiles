@@ -1,5 +1,5 @@
 FROM scratch AS openstreetmap-carto
-ADD https://github.com/osmItalia/openstreetmap-carto.git#master /
+ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_lua /
 
 FROM debian:bookworm
 RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \

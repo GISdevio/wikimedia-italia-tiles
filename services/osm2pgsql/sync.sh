@@ -9,10 +9,8 @@ then
         --cache=20000 \
 	    --flat-nodes=/data/cache/nodes.bin \
         --slim `# needed by osm2pgsql-replication` \
-        --multi-geometry \
-        --hstore \
-        --style openstreetmap-carto.style \
-        --tag-transform-script openstreetmap-carto.lua \
+        --output flex \
+        --style openstreetmap-carto-flex.lua \
         --input-reader=pbf "$INITIAL_PBF"
 fi
 
@@ -25,9 +23,7 @@ do
 	    --flat-nodes=/data/cache/nodes.bin \
         --append \
         --slim \
-        --multi-geometry \
-        --hstore \
-        --style openstreetmap-carto.style \
-        --tag-transform-script openstreetmap-carto.lua
+        --output flex \
+        --style openstreetmap-carto-flex.lua
     sleep 1h
 done
