@@ -30,8 +30,8 @@ WORKDIR /styles
 COPY --from=style_carto /openstreetmap-carto/project.xml ./carto/
 COPY --from=style_carto /openstreetmap-carto/symbols ./carto/symbols
 COPY --from=style_carto /openstreetmap-carto/patterns ./carto/patterns
-COPY --from=style_hiking /openstreetmap-hiking/project.xml ./hiking/
-COPY --from=style_hiking /openstreetmap-hiking/symbols ./hiking/symbols/
+#COPY --from=style_hiking /openstreetmap-hiking/project.xml ./hiking/
+#COPY --from=style_hiking /openstreetmap-hiking/symbols ./hiking/symbols/
 COPY renderd/entrypoint.sh ./
 COPY common/renderd.conf /etc/renderd.conf
 
