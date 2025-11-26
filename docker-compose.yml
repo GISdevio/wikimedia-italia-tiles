@@ -75,8 +75,39 @@ services:
     volumes:
       - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.tiles_apache.rule=Host(`${VHOST}`)
+      - traefik.http.routers.tiles_apache.entrypoints=websecure
+      - traefik.http.routers.tiles_apache.tls=true
+      - traefik.http.routers.tiles_apache.tls.certresolver=le
+      - traefik.http.services.tiles_apache.loadbalancer.server.port=80
+    networks:
+      - traefik
+  traefik:
+    image: traefik:v3.6
+    command:
+      - "--api=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.le.acme.storage=/data/acme.json"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
     ports:
-      - 8081:8081
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./data/traefik:/data
+    networks:
+      - traefik
 
 volumes:
   renderd-socket:
+
+networks:
+  traefik: {}

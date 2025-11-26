@@ -18,6 +18,14 @@ docker compose --profile init run --rm external-data
 docker compose --profile init down
 ```
 
+Setup SSL certificate:
+
+```bash
+cp env.example .env
+```
+
+Write the email address that should be used to generate the SSL certificates in `.env`, as well as the domanin name.
+
 ## Run
 
 ```bash
