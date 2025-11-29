@@ -12,7 +12,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
 COPY common/renderd.conf /etc/renderd.conf
 
 COPY apache/carto.conf /etc/apache2/sites-available/
-COPY apache/carto.html /usr/share/renderd/carto/index.html
+COPY apache/index.html /var/www/html/index.html
 RUN a2enmod tile && a2ensite carto && \
     a2enmod setenvif headers remoteip && \
     mkdir /var/run/apache2

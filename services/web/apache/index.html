@@ -5,8 +5,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-    <link rel="stylesheet" href="leaflet/leaflet.css" />
-    <script src="leaflet/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   </head>
 
   <body style="margin: 0">
@@ -20,38 +20,23 @@
         attribution: attribution,
       };
 
-      var png = L.tileLayer(
-        "/tiles/carto/{z}/{x}/{y}.png",
-        options,
-      );
-
-      var jpg = L.tileLayer(
-        "/tiles/carto/{z}/{x}/{y}.jpg",
-        options,
-      );
-      var png32 = L.tileLayer(
-        "/tiles/carto/{z}/{x}/{y}.png",
-        options,
-      );
-      var webp = L.tileLayer(
-        "/tiles/carto/{z}/{x}/{y}.webp",
-        options,
-      );
+      var carto_italian = L.tileLayer("/tiles/carto/{z}/{x}/{y}.png", options);
+      var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: attribution + ' | <a href="https://www.openstreetmap.org/">OSM</a>'
+      });
 
       var map = L.map("map", {
         center: [42, 11],
         zoom: 7,
-        layers: [png],
+        layers: [carto_italian],
       });
 
       var baseMaps = {
-        JPG: jpg,
-        PNG: png,
-        PNG32: png32,
-        WEBP: webp,
+        "Carto (Italian)": carto_italian,
+        "OpenStreetMap": osm,
       };
-
-      var layerControl = L.control.layers(baseMaps).addTo(map);
+      var layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
     </script>
   </body>
 </html>
