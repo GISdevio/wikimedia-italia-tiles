@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # https://cartocss.readthedocs.io/en/latest/mml.html#datasource
-for file in carto/project.xml `# hiking/project.xml`
+for file in carto/project.xml hiking/project.xml
 do
   xmlstarlet ed --inplace \
     -u "/Map/Layer/Datasource/Parameter[@name='dbname']" -v "$PGDATABASE" \
