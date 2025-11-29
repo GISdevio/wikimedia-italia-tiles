@@ -21,6 +21,7 @@
       };
 
       var carto_italian = L.tileLayer("/tiles/carto/{z}/{x}/{y}.png", options);
+      var hiking = L.tileLayer("/tiles/hiking/{z}/{x}/{y}.png", options);
       var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: attribution + ' | <a href="https://www.openstreetmap.org/">OSM</a>'
@@ -34,6 +35,7 @@
 
       var baseMaps = {
         "Carto (Italian)": carto_italian,
+        "Hiking": hiking,
         "OpenStreetMap": osm,
       };
       var layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);

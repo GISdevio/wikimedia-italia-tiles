@@ -2,14 +2,14 @@ services:
   postgres: &postgres
     build: services/postgres
     environment: &env
-      POSTGRES_PASSWORD: test_password
-      POSTGRES_USER: osm
-      POSTGRES_DB: osm
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test_password}
+      POSTGRES_USER: ${POSTGRES_USER:-osm}
+      POSTGRES_DB: ${POSTGRES_DB:-osm}
       # https://www.postgresql.org/docs/current/libpq-envars.html
       PGHOST: postgres
-      PGPASSWORD: test_password
-      PGUSER: osm
-      PGDATABASE: osm
+      PGPASSWORD: ${POSTGRES_PASSWORD:-test_password}
+      PGUSER: ${POSTGRES_USER:-osm}
+      PGDATABASE: ${POSTGRES_DB:-osm}
     healthcheck:
       test: ["CMD", "pg_isready"]
     volumes:
@@ -31,6 +31,17 @@ services:
       <<: *env
     volumes:
       - ./data/external:/data
+  hiking-import:
+    profiles:
+      - init
+    build: services/external-data
+    depends_on:
+      - postgres-fastimport
+    environment:
+      <<: *env
+    volumes:
+      - ./data/hiking:/data:ro
+    command: sh -c "ogr2ogr -f 'PostgreSQL' \"PG:\" /data/contour.jsonl -nln public.contour -overwrite"
   import:
     profiles:
       - init
@@ -65,7 +76,7 @@ services:
     volumes:
       - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles
-      - ./data/layers_dummy:/syles/hiking/layers:ro
+      - ./data/hiking:/styles/hiking/layers:ro
   apache:
     build:
       context: services/web
