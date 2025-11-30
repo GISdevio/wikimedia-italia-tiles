@@ -1,7 +1,7 @@
 FROM scratch AS openstreetmap-carto
 ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_lua /
 
-FROM debian:bookworm
+FROM debian:forky
 RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
     --mount=type=cache,sharing=locked,target=/var/cache/apt \
     rm -f /etc/apt/apt.conf.d/docker-clean; \

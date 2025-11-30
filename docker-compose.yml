@@ -13,7 +13,7 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready"]
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/18/docker
     #command: ["postgres", "-c", "log_statement=all"] # debug
   postgres-fastimport:
     <<: *postgres

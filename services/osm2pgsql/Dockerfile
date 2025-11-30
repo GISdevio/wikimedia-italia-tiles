@@ -1,9 +1,9 @@
 FROM scratch AS openstreetmap-carto
 ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_lua /openstreetmap-carto
 
-FROM iboates/osm2pgsql:2.1.1
+FROM iboates/osm2pgsql:2.2.0
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apk \
-    apk add bash postgresql17-client
+    apk add postgresql17-client
 
 WORKDIR /app
 COPY entrypoint.sh sync.sh init.sh ./

@@ -1,4 +1,4 @@
-FROM debian:bookworm
+FROM debian:forky
 RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
     --mount=type=cache,sharing=locked,target=/var/cache/apt \
     rm -f /etc/apt/apt.conf.d/docker-clean; \

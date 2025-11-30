@@ -1,4 +1,4 @@
-FROM node:22-slim AS cartocss
+FROM node:24-slim AS cartocss
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g carto
 
@@ -12,8 +12,7 @@ ADD https://github.com/osmItalia/openstreetmap-hiking.git#master /openstreetmap-
 WORKDIR /openstreetmap-hiking
 RUN carto project.mml > project.xml
 
-#FROM nixery.dev/shell/apachehttpdpackages.mod_tile/xmlstarlet # Received request for map layer 'carto' which failed to load
-FROM debian:bookworm
+FROM debian:forky
 RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
     --mount=type=cache,sharing=locked,target=/var/cache/apt \
     rm -f /etc/apt/apt.conf.d/docker-clean; \
