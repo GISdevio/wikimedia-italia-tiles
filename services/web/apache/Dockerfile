@@ -13,8 +13,10 @@ COPY common/renderd.conf /etc/renderd.conf
 
 COPY apache/carto.conf /etc/apache2/sites-available/
 COPY apache/index.html /var/www/html/index.html
+COPY apache/entrypoint.sh /entrypoint.sh
 RUN a2enmod tile && a2ensite carto && \
     a2enmod setenvif headers remoteip && \
     mkdir /var/run/apache2
 
-CMD bash -c "source /etc/apache2/envvars && exec apachectl -D FOREGROUND"
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apachectl", "-D", "FOREGROUND"]
