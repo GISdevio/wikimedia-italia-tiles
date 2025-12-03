@@ -11,7 +11,9 @@ services:
       PGUSER: ${POSTGRES_USER:-osm}
       PGDATABASE: ${POSTGRES_DB:-osm}
     healthcheck:
-      test: ["CMD", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready && psql -c 'SELECT 1'"]
+      interval: 5s
+      retries: 10
     volumes:
       - ./data/postgres:/var/lib/postgresql/18/docker
     #command: ["postgres", "-c", "log_statement=all"] # debug
@@ -26,7 +28,8 @@ services:
       - init
     build: services/external-data
     depends_on:
-      - postgres-fastimport
+      postgres-fastimport:
+        condition: service_healthy
     environment:
       <<: *env
     volumes:
@@ -36,7 +39,8 @@ services:
       - init
     build: services/external-data
     depends_on:
-      - postgres-fastimport
+      postgres-fastimport:
+        condition: service_healthy
     environment:
       <<: *env
     volumes:
@@ -48,7 +52,8 @@ services:
     build: services/osm2pgsql
     command: "./init.sh"
     depends_on:
-      - postgres-fastimport
+      postgres-fastimport:
+        condition: service_healthy
     environment:
       <<: *env
       REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
@@ -59,7 +64,8 @@ services:
   sync:
     build: services/osm2pgsql
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       <<: *env
     volumes:
@@ -69,7 +75,8 @@ services:
       context: services/web
       dockerfile: renderd/Dockerfile
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
       <<: *env
       #G_MESSAGES_DEBUG: "all" # debug
