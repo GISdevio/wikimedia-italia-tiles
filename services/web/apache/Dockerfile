@@ -11,10 +11,10 @@ RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
 # LoadTileConfigFile
 COPY common/renderd.conf /etc/renderd.conf
 
-COPY apache/carto.conf /etc/apache2/sites-available/
+COPY apache/carto.conf /etc/apache2/sites-available/000-default.conf
 COPY apache/index.html /var/www/html/index.html
 COPY apache/entrypoint.sh /entrypoint.sh
-RUN a2enmod tile && a2ensite carto && \
+RUN a2enmod tile && a2ensite 000-default && \
     a2enmod setenvif headers remoteip && \
     mkdir /var/run/apache2
 
