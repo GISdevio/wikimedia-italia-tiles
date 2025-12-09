@@ -18,5 +18,6 @@ RUN a2enmod tile && a2ensite carto && \
     a2enmod setenvif headers remoteip && \
     mkdir /var/run/apache2
 
+COPY apache/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apachectl", "-D", "FOREGROUND"]
