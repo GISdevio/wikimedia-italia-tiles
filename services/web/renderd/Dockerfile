@@ -31,7 +31,7 @@ COPY --from=style_carto /openstreetmap-carto/symbols ./carto/symbols
 COPY --from=style_carto /openstreetmap-carto/patterns ./carto/patterns
 COPY --from=style_hiking /openstreetmap-hiking/project.xml ./hiking/
 COPY --from=style_hiking /openstreetmap-hiking/symbols ./hiking/symbols/
-COPY web/renderd/entrypoint.sh ./
+COPY web/renderd/entrypoint.sh web/renderd/prerender.sh ./
 COPY web/common/renderd.conf /etc/renderd.conf
 
 ENTRYPOINT ["./entrypoint.sh"]
