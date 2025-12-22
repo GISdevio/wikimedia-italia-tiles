@@ -26,8 +26,6 @@ Populate the database:
 docker compose build
 docker compose --profile init build
 docker compose --profile init run --rm import
-docker compose --profile init run --rm external-data
-docker compose --profile init run --rm hiking-import
 docker compose --profile init down
 ```
 
