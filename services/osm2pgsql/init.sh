@@ -2,7 +2,14 @@
 
 set -eu
 
-psql -v ON_ERROR_STOP=on -f functions.sql
+cd osmita-carto/
+./scripts/get-external-data.py --cache --data /data/external -H $PGHOST -d $PGDATABASE -U $PGUSER -w $PGPASSWORD
+psql -v ON_ERROR_STOP=on -f ./functions.sql
+cd ../
+
+cd osmita-hiking/
+ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD" /data/hiking/contour.jsonl -nln public.contour -overwrite
+cd ../
 
 osm2pgsql \
     --cache=20000 \
@@ -11,5 +18,14 @@ osm2pgsql \
     --output flex \
     --style all_styles.lua \
     --input-reader=pbf "$INITIAL_PBF"
+
+cd osmita-carto/
+./scripts/indexes.py --concurrent --notexist | psql -v ON_ERROR_STOP=on
+cd ../
+
+cd osmita-hiking/
+psql -v ON_ERROR_STOP=on -f ./scripts/indexes.sql
+psql -v ON_ERROR_STOP=on -f ./scripts/db_function.sql
+cd ../
 
 osm2pgsql-replication init --server "$REPLICATION_URL"

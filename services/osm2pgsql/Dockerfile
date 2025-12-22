@@ -1,16 +1,25 @@
-FROM scratch AS openstreetmap-carto
-ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_lua /openstreetmap-carto
-ADD https://github.com/osmItalia/openstreetmap-hiking.git#master /openstreetmap-hiking
-
 FROM iboates/osm2pgsql:2.2.0
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apk \
-    apk add postgresql17-client
+    apk add postgresql17-client gdal-tools gdal-driver-pg
+RUN --mount=type=cache,sharing=locked,target=/root/.cache/pip \
+    pip install pyyaml
 
 WORKDIR /app
-COPY entrypoint.sh sync.sh init.sh all_styles.lua ./
-COPY --from=openstreetmap-carto /openstreetmap-carto/functions.sql ./
-COPY --from=openstreetmap-carto /openstreetmap-carto/openstreetmap-carto-flex.lua ./
-COPY --from=openstreetmap-carto /openstreetmap-hiking/scripts/route.lua ./
+COPY osm2pgsql/entrypoint.sh osm2pgsql/sync.sh osm2pgsql/init.sh osm2pgsql/all_styles.lua ./
+
+COPY styles/osmita-carto/scripts/get-external-data.py \
+     styles/osmita-carto/scripts/indexes.py \
+     ./osmita-carto/scripts/
+COPY styles/osmita-carto/external-data.yml \
+     styles/osmita-carto/functions.sql \
+     styles/osmita-carto/openstreetmap-carto-flex.lua \
+     styles/osmita-carto/indexes.yml \
+      ./osmita-carto/
+
+COPY styles/osmita-hiking/scripts/route.lua \
+     styles/osmita-hiking/scripts/db_function.sql \
+     styles/osmita-hiking/scripts/indexes.sql \
+        ./osmita-hiking/scripts/
 
 ENV REPLICATION_URL "https://planet.openstreetmap.org/replication/hour/"
 

@@ -3,12 +3,12 @@ RUN --mount=type=cache,target=/root/.npm \
     npm install -g carto
 
 FROM cartocss AS style_carto
-ADD https://github.com/osmItalia/openstreetmap-carto.git#name_it_lua /openstreetmap-carto
+COPY styles/osmita-carto /openstreetmap-carto
 WORKDIR /openstreetmap-carto
 RUN carto project.mml > project.xml
 
 FROM cartocss AS style_hiking
-ADD https://github.com/osmItalia/openstreetmap-hiking.git#master /openstreetmap-hiking
+COPY styles/osmita-hiking /openstreetmap-hiking
 WORKDIR /openstreetmap-hiking
 RUN carto project.mml > project.xml
 
@@ -31,8 +31,8 @@ COPY --from=style_carto /openstreetmap-carto/symbols ./carto/symbols
 COPY --from=style_carto /openstreetmap-carto/patterns ./carto/patterns
 COPY --from=style_hiking /openstreetmap-hiking/project.xml ./hiking/
 COPY --from=style_hiking /openstreetmap-hiking/symbols ./hiking/symbols/
-COPY renderd/entrypoint.sh ./
-COPY common/renderd.conf /etc/renderd.conf
+COPY web/renderd/entrypoint.sh ./
+COPY web/common/renderd.conf /etc/renderd.conf
 
 ENTRYPOINT ["./entrypoint.sh"]
 

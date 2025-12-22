@@ -9,15 +9,15 @@ RUN --mount=type=cache,sharing=locked,target=/var/lib/apt/lists \
         apache2 libapache2-mod-tile
 
 # LoadTileConfigFile
-COPY common/renderd.conf /etc/renderd.conf
+COPY web/common/renderd.conf /etc/renderd.conf
 
-COPY apache/carto.conf /etc/apache2/sites-available/000-default.conf
-COPY apache/index.html /var/www/html/index.html
-COPY apache/entrypoint.sh /entrypoint.sh
+COPY web/apache/carto.conf /etc/apache2/sites-available/000-default.conf
+COPY web/apache/index.html /var/www/html/index.html
+COPY web/apache/entrypoint.sh /entrypoint.sh
 RUN a2enmod tile && a2ensite 000-default && \
     a2enmod setenvif headers remoteip && \
     mkdir /var/run/apache2
 
-COPY apache/entrypoint.sh /entrypoint.sh
+COPY web/apache/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apachectl", "-D", "FOREGROUND"]

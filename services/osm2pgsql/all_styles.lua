@@ -1,2 +1,2 @@
-dofile('openstreetmap-carto-flex.lua')
-dofile('route.lua')
+dofile('osmita-carto/openstreetmap-carto-flex.lua')
+dofile('osmita-hiking/scripts/route.lua')

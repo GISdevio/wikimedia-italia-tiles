@@ -26,33 +26,12 @@ services:
     volumes:
       - ./data/postgres:/var/lib/postgresql/18/docker
       - ./services/postgres/postgres-fastimport.conf:/etc/postgresql/postgresql.conf:ro
-  external-data:
-    profiles:
-      - init
-    build: services/external-data
-    depends_on:
-      postgres-fastimport:
-        condition: service_healthy
-    environment:
-      <<: *env
-    volumes:
-      - ./data/external:/data
-  hiking-import:
-    profiles:
-      - init
-    build: services/external-data
-    depends_on:
-      postgres-fastimport:
-        condition: service_healthy
-    environment:
-      <<: *env
-    volumes:
-      - ./data/hiking:/data:ro
-    command: sh -c "ogr2ogr -f 'PostgreSQL' \"PG:\" /data/contour.jsonl -nln public.contour -overwrite"
   import:
     profiles:
       - init
-    build: services/osm2pgsql
+    build:
+      context: services
+      dockerfile: osm2pgsql/Dockerfile
     command: "./init.sh"
     depends_on:
       postgres-fastimport:
@@ -60,9 +39,11 @@ services:
     environment:
       <<: *env
       REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
-      INITIAL_PBF: /data/init/planet-latest.osm.pbf
+      INITIAL_PBF: "/data/init/${INITIAL_PBF:-planet-latest.osm.pbf}"
     volumes:
       - ./data/init:/data/init:ro
+      - ./data/hiking:/data/hiking:ro
+      - ./data/external:/data/external
       - ./data/cache:/data/cache
   sync:
     build: services/osm2pgsql
@@ -75,8 +56,8 @@ services:
       - ./data/cache:/data/cache
   renderd:
     build:
-      context: services/web
-      dockerfile: renderd/Dockerfile
+      context: services
+      dockerfile: web/renderd/Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
@@ -89,8 +70,8 @@ services:
       - ./data/hiking:/styles/hiking/layers:ro
   apache:
     build:
-      context: services/web
-      dockerfile: apache/Dockerfile
+      context: services
+      dockerfile: web/apache/Dockerfile
     depends_on:
       - renderd
     volumes:
