@@ -1,6 +1,6 @@
-[submodule "services/osm2pgsql/osmita-carto"]
+[submodule "services/styles/osmita-carto"]
 	path = services/styles/osmita-carto
 	url = https://github.com/osmItalia/openstreetmap-carto.git
-[submodule "services/osm2pgsql/osmita-hiking"]
+[submodule "services/styles/osmita-hiking"]
 	path = services/styles/osmita-hiking
 	url = https://github.com/osmItalia/openstreetmap-hiking.git
