@@ -46,7 +46,9 @@ services:
       - ./data/external:/data/external
       - ./data/cache:/data/cache
   sync:
-    build: services/osm2pgsql
+    build:
+      context: services
+      dockerfile: osm2pgsql/Dockerfile
     depends_on:
       postgres:
         condition: service_healthy
