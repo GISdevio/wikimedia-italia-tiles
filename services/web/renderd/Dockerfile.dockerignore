@@ -1,3 +1,4 @@
 postgres/
 osm2pgsql/
-styles/osmita-carto/
+styles/osmita-carto/data/
+styles/osmita-hiking/layers/
