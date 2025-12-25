@@ -12,6 +12,7 @@ ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$
 cd ../
 
 osm2pgsql \
+    --number-processes 8 \
     --cache=20000 \
     --flat-nodes=/data/cache/nodes.bin \
     --slim `# needed by osm2pgsql-replication` \
@@ -26,6 +27,7 @@ cd ../
 cd osmita-hiking/
 psql -v ON_ERROR_STOP=on -f ./scripts/indexes.sql
 psql -v ON_ERROR_STOP=on -f ./scripts/db_function.sql
+psql -v ON_ERROR_STOP=on -f ./scripts/update_hiking_ways.sql
 cd ../
 
 osm2pgsql-replication init --server "$REPLICATION_URL"
