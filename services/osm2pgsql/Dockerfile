@@ -19,6 +19,7 @@ COPY styles/osmita-carto/external-data.yml \
 COPY styles/osmita-hiking/scripts/route.lua \
      styles/osmita-hiking/scripts/db_function.sql \
      styles/osmita-hiking/scripts/indexes.sql \
+     osm2pgsql/update_hiking_ways.sql \
         ./osmita-hiking/scripts/
 
 ENV REPLICATION_URL "https://planet.openstreetmap.org/replication/hour/"
