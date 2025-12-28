@@ -8,7 +8,7 @@ psql -v ON_ERROR_STOP=on -f ./functions.sql
 cd ../
 
 cd osmita-hiking/
-ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD" /data/hiking/contour.jsonl -nln public.contour -overwrite
+ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD" /vsigzip//data/hiking/contour.jsonl.gz -nln public.contour -overwrite
 cd ../
 
 osm2pgsql \
@@ -25,9 +25,9 @@ cd osmita-carto/
 cd ../
 
 cd osmita-hiking/
+psql -v ON_ERROR_STOP=on -f ./scripts/triggers.sql
 psql -v ON_ERROR_STOP=on -f ./scripts/indexes.sql
 psql -v ON_ERROR_STOP=on -f ./scripts/db_function.sql
-psql -v ON_ERROR_STOP=on -f ./scripts/update_hiking_ways.sql
 cd ../
 
 osm2pgsql-replication init --server "$REPLICATION_URL"
