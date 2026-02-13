@@ -1,6 +1,6 @@
 FROM iboates/osm2pgsql:2.2.0
 RUN --mount=type=cache,sharing=locked,target=/var/cache/apk \
-    apk add postgresql17-client gdal-tools gdal-driver-pg
+    apk add postgresql18-client gdal-tools gdal-driver-pg
 RUN --mount=type=cache,sharing=locked,target=/root/.cache/pip \
     pip install pyyaml
 
