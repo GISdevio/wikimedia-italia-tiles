@@ -8,7 +8,9 @@ psql -v ON_ERROR_STOP=on -f ./functions.sql
 cd ../
 
 cd osmita-hiking/
-ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD" /vsigzip//data/hiking/contour.jsonl.gz -nln public.contour -overwrite
+ogr2ogr -if GeoJSONSeq -of PostgreSQL "PG:host=$PGHOST dbname=$PGDATABASE user=$PGUSER password=$PGPASSWORD" \
+    /vsigzip//data/hiking/contour.jsonl.gz -nln public.contour_import -a_srs EPSG:3857 -overwrite
+psql -h "$PGHOST" -d "$PGDATABASE" -U "$PGUSER" -f scripts/optimize_contours.sql
 cd ../
 
 osm2pgsql \
