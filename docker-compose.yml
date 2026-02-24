@@ -15,6 +15,7 @@ services:
       interval: 5s
       start_period: 10s
       retries: 10
+    shm_size: '2g'
     volumes:
       - ./data/postgres:/var/lib/postgresql/18/docker
     #command: ["postgres", "-c", "log_statement=all"] # debug
