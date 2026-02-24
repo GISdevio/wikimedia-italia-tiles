@@ -77,6 +77,24 @@ services:
       - renderd-socket:/run/renderd
       - ./data/tiles:/var/cache/renderd/tiles:z
       - ./data/hiking:/styles/hiking/layers:ro,z
+  prerender:
+    <<: *restart
+    build:
+      context: services
+      dockerfile: web/renderd/Dockerfile
+    depends_on:
+      - renderd
+    command: ["./prerender.sh"]
+    environment:
+      <<: *env
+      MIN_ZOOM: "0"
+      MAX_ZOOM: "13"
+      NUM_THREADS: "4"
+      SLEEP_INTERVAL: "24h"
+    volumes:
+      - renderd-socket:/run/renderd
+      - ./data/tiles:/var/cache/renderd/tiles:z
+      - ./data/hiking:/styles/hiking/layers:ro,z
   apache:
     <<: *restart
     build:
