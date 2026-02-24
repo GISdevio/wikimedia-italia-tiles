@@ -12,6 +12,7 @@ SLEEP_INTERVAL="${SLEEP_INTERVAL:-24h}"
 # Format: BOUNDS_<MAPNAME>="min_lon min_lat max_lon max_lat"
 # If not set, renders all tiles for that map
 BOUNDS_hiking="${BOUNDS_hiking:--55.961800 24.2840472 61.0975692 72.2993719}"
+BOUNDS_carto="${BOUNDS_carto:--55.961800 24.2840472 61.0975692 72.2993719}"
 
 # Wait for renderd socket to be available
 while [ ! -S /run/renderd/renderd.sock ]
