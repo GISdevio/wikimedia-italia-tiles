@@ -17,7 +17,7 @@ services:
       retries: 10
     shm_size: '2g'
     volumes:
-      - ./data/postgres:/var/lib/postgresql/18/docker
+      - ./data/postgres:/var/lib/postgresql/18/docker:z
     #command: ["postgres", "-c", "log_statement=all"] # debug
   postgres-fastimport:
     <<: *postgres
@@ -25,8 +25,8 @@ services:
       - init
     hostname: postgres
     volumes:
-      - ./data/postgres:/var/lib/postgresql/18/docker
-      - ./services/postgres/postgres-fastimport.conf:/etc/postgresql/postgresql.conf:ro
+      - ./data/postgres:/var/lib/postgresql/18/docker:z
+      - ./services/postgres/postgres-fastimport.conf:/etc/postgresql/postgresql.conf:ro,z
   import:
     profiles:
       - init
@@ -42,10 +42,10 @@ services:
       REPLICATION_URL: "https://planet.openstreetmap.org/replication/day/"
       INITIAL_PBF: "/data/init/${INITIAL_PBF:-planet-latest.osm.pbf}"
     volumes:
-      - ./data/init:/data/init:ro
-      - ./data/hiking:/data/hiking:ro
-      - ./data/external:/data/external
-      - ./data/cache:/data/cache
+      - ./data/init:/data/init:ro,Z
+      - ./data/hiking:/data/hiking:ro,z
+      - ./data/external:/data/external:Z
+      - ./data/cache:/data/cache:z
   sync:
     build:
       context: services
@@ -56,7 +56,7 @@ services:
     environment:
       <<: *env
     volumes:
-      - ./data/cache:/data/cache
+      - ./data/cache:/data/cache:z
   renderd:
     build:
       context: services
@@ -69,8 +69,8 @@ services:
       #G_MESSAGES_DEBUG: "all" # debug
     volumes:
       - renderd-socket:/run/renderd
-      - ./data/tiles:/var/cache/renderd/tiles
-      - ./data/hiking:/styles/hiking/layers:ro
+      - ./data/tiles:/var/cache/renderd/tiles:z
+      - ./data/hiking:/styles/hiking/layers:ro,z
   apache:
     build:
       context: services
@@ -79,7 +79,7 @@ services:
       - renderd
     volumes:
       - renderd-socket:/run/renderd
-      - ./data/tiles:/var/cache/renderd/tiles:ro
+      - ./data/tiles:/var/cache/renderd/tiles:ro,z
     labels:
       - traefik.enable=true
       - traefik.http.routers.tiles_apache.rule=Host(`${VHOST}`)
@@ -90,7 +90,9 @@ services:
     networks:
       - traefik
   traefik:
-    image: traefik:v3.6
+    profiles:
+      - traefik
+    image: docker.io/library/traefik:v3.6
     command:
       - "--api=false"
       - "--providers.docker=true"
@@ -106,8 +108,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./data/traefik:/data
+      - ${DOCKER_SOCK:-/var/run/docker.sock}:/var/run/docker.sock:ro,Z
+      - ./data/traefik:/data:z
     networks:
       - traefik
 
