@@ -1,5 +1,9 @@
+x-restart: &restart
+  restart: unless-stopped
+
 services:
   postgres: &postgres
+    <<: *restart
     build: services/postgres
     environment: &env
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-test_password}
@@ -47,6 +51,7 @@ services:
       - ./data/external:/data/external:Z
       - ./data/cache:/data/cache:z
   sync:
+    <<: *restart
     build:
       context: services
       dockerfile: osm2pgsql/Dockerfile
@@ -58,6 +63,7 @@ services:
     volumes:
       - ./data/cache:/data/cache:z
   renderd:
+    <<: *restart
     build:
       context: services
       dockerfile: web/renderd/Dockerfile
@@ -72,6 +78,7 @@ services:
       - ./data/tiles:/var/cache/renderd/tiles:z
       - ./data/hiking:/styles/hiking/layers:ro,z
   apache:
+    <<: *restart
     build:
       context: services
       dockerfile: web/apache/Dockerfile
@@ -90,6 +97,7 @@ services:
     networks:
       - traefik
   traefik:
+    <<: *restart
     profiles:
       - traefik
     image: docker.io/library/traefik:v3.6
