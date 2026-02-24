@@ -1,44 +1,46 @@
 <!doctype html>
 <html>
-  <head>
-    <title>renderd example map</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  </head>
 
-  <body style="margin: 0">
-    <div id="map" style="position: absolute; width: 100%; height: 100%"></div>
+<head>
+  <title>Wikimedia Italia Tiles</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
 
-    <script>
-      var attribution =
-        'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors.';
-      var options = {
-        maxZoom: 20,
-        attribution: attribution,
-      };
+<body style="margin: 0">
+  <div id="map" style="position: absolute; width: 100%; height: 100%"></div>
 
-      var carto_italian = L.tileLayer("/tiles/carto/{z}/{x}/{y}.png", options);
-      var hiking = L.tileLayer("/tiles/hiking/{z}/{x}/{y}.png", options);
-      var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: attribution + ' | <a href="https://www.openstreetmap.org/">OSM</a>'
-      });
+  <script>
+    var attribution =
+      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors.';
+    var options = {
+      maxZoom: 20,
+      attribution: attribution,
+    };
 
-      var map = L.map("map", {
-        center: [42, 11],
-        zoom: 7,
-        layers: [carto_italian],
-      });
+    var carto_italian = L.tileLayer("/tiles/carto/{z}/{x}/{y}.png", options);
+    var hiking = L.tileLayer("/tiles/hiking/{z}/{x}/{y}.png", options);
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: attribution + ' | <a href="https://www.openstreetmap.org/">OSM</a>'
+    });
 
-      var baseMaps = {
-        "Carto (Italian)": carto_italian,
-        "Hiking": hiking,
-        "OpenStreetMap": osm,
-      };
-      var layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
-    </script>
-  </body>
+    var map = L.map("map", {
+      center: [42, 11],
+      zoom: 7,
+      layers: [carto_italian],
+    });
+
+    var baseMaps = {
+      "Carto (standard)": osm,
+      "Carto (Italian)": carto_italian,
+      "Hiking (Italian)": hiking,
+    };
+    var layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
+  </script>
+</body>
+
 </html>
