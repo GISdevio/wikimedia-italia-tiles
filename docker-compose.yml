@@ -116,8 +116,6 @@ services:
       - traefik
   traefik:
     <<: *restart
-    profiles:
-      - traefik
     image: docker.io/library/traefik:v3.6
     command:
       - "--api=false"
