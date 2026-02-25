@@ -25,6 +25,8 @@ do
         --slim \
         --output flex \
         --style all_styles.lua \
-    || echo "Update failed, retrying in 1 hour..."
+    || echo "Update failed, retrying in 1 hour.."
+    # Reconcile is_hiking status
+    psql -v ON_ERROR_STOP=on -f ./osmita-hiking/scripts/triggers.sql
     sleep 1h
 done
