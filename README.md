@@ -45,7 +45,7 @@ echo 'net.ipv4.ip_unprivileged_port_start=80' | sudo tee /etc/sysctl.d/50-unpriv
 
 Download `planet-latest.osm.pbf` into `data/init/`.
 Populate `data/hiking/` with the `.tif` raster files and contour data required by the hiking style
-(see [INSTALL.md](services/styles/osmita-hiking/INSTALL.md)).
+(see [INSTALL.md](https://github.com/osmItalia/openstreetmap-hiking/blob/master/INSTALL.md)).
 
 Copy the example env file and configure it:
 
