@@ -21,8 +21,13 @@
       attribution: attribution,
     };
 
+    var hikingBounds = L.latLngBounds(
+      L.latLng(24.28, -55.96),
+      L.latLng(72.30, 61.10)
+    );
+
     var carto_italian = L.tileLayer("/tiles/carto/{z}/{x}/{y}.png", options);
-    var hiking = L.tileLayer("/tiles/hiking/{z}/{x}/{y}.png", options);
+    var hiking = L.tileLayer("/tiles/hiking/{z}/{x}/{y}.png", Object.assign({}, options, { bounds: hikingBounds }));
     var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
       attribution: attribution + ' | <a href="https://www.openstreetmap.org/">OSM</a>'
@@ -40,6 +45,12 @@
       "Hiking (Italian)": hiking,
     };
     var layerControl = L.control.layers(baseMaps, null, { collapsed: false }).addTo(map);
+
+    map.on('baselayerchange', function (e) {
+      if (e.name === "Hiking (Italian)" && !hikingBounds.contains(map.getCenter())) {
+        map.flyTo([42, 11], 7);
+      }
+    });
   </script>
 </body>
 
